@@ -1,0 +1,10 @@
+dist/
+temp/
+
+# Ignore all .env files:
+*.env*
+delivery/
+.husky
+node_modules
+package-lock.json
+package.json

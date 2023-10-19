@@ -1,0 +1,28 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": "true",
+  "scripts": {
+    "dev": "nodemon index.js -w . -w ../../plugin",
+    "test": "lab -a @hapi/code -v",
+    "coveralls": "lab -r lcov | coveralls",
+    "lint": "eslint . --fix",
+    "format": "prettier . --write"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@hapi/catbox-memory": "^6.0.1",
+    "@hapi/catbox-object": "^3.0.1",
+    "@hapi/hapi": "^21.3.2",
+    "@hapi/hoek": "^11.0.2",
+    "@hapipal/schmervice": "^3.0.0",
+    "blipp": "^4.0.2",
+    "dayjs": "^1.11.10"
+  }
+}

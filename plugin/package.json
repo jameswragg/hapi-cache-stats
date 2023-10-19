@@ -1,0 +1,29 @@
+{
+  "name": "@jameswragg/hapi-cache-stats",
+  "version": "1.0.1",
+  "description": "Cache insights for Hapi servers",
+  "main": "index.js",
+  "scripts": {
+    "test": "lab -v -a @hapi/code",
+    "test:watch": "nodemon -w *.js -w test/**/*.js --exec \"npm run test\"",
+    "prepare": "cp ../README.md .",
+    "postpublish": "rm README.md"
+  },
+  "files": [
+    "index.js",
+    "README.md",
+    "public"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hoek": "^11.0.2",
+    "dayjs": "^1.11.10",
+    "fs-extra": "^11.1.1",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "@hapi/code": "^9.0.3",
+    "@hapi/lab": "^25.1.3"
+  }
+}

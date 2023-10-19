@@ -1,0 +1,9 @@
+dist
+temp
+**/dist
+*.json
+**/*.json
+!.eslintrc.js
+node_modules
+delivery
+plugin/public/assets

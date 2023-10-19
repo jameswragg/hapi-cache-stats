@@ -1,0 +1,44 @@
+{
+  "name": "root",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "build": "npm run build -w frontend",
+    "dev": "concurrently \"npm:dev:*\"",
+    "dev:frontend": "npm run dev -w frontend",
+    "dev:example": "npm run dev -w example",
+    "lint-staged": "lint-staged",
+    "lint": "eslint --fix \"./**/*.{js,json}\"",
+    "format": "prettier --write \"./**/*.{js,json}\"",
+    "publish": "npm run build && npm run publish -w plugin",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@hapi/code": "^9.0.3",
+    "@hapi/lab": "^25.1.3",
+    "concurrently": "^8.2.1",
+    "coveralls": "^3.1.1",
+    "eslint": "^8.49.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.3"
+  },
+  "workspaces": [
+    "apps/*",
+    "plugin"
+  ],
+  "lint-staged": {
+    "*.{js,json}": [
+      "prettier --write",
+      "eslint --cache --fix",
+      "eslint"
+    ]
+  }
+}
