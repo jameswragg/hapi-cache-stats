@@ -12,6 +12,7 @@
     "lint": "eslint --fix \"./**/*.{js,json}\"",
     "format": "prettier --write \"./**/*.{js,json}\"",
     "publish": "npm run build && npm run publish -w plugin",
+    "prepare": "husky install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
