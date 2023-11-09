@@ -20,9 +20,14 @@ describe('Deployment', () => {
   it('creates a route.', async () => {
     const server = Hapi.server();
 
-    await server.register(Plugin);
+    await server.register({
+      plugin: Plugin,
+      options: {
+        base: '/cache-stats',
+      },
+    });
 
-    const res = await server.inject('/cache-insights');
+    const res = await server.inject('/cache-stats');
     expect(res.statusCode).to.equal(200);
   });
 
@@ -40,7 +45,7 @@ describe('Deployment', () => {
     expect(res.statusCode).to.equal(200);
   });
 
-  it('collects method stats.', async () => {
+  it('catbox stats are exposed.', async () => {
     const ServiceX = class ServiceX extends Schmervice.Service {
       async add(a, b) {
         return a + b;
@@ -62,14 +67,14 @@ describe('Deployment', () => {
     await server.register(Schmervice);
     server.registerService(ServiceX);
 
-    const insights = server.methodCaches();
+    const { default: defaultPolicy } = server.cachePolicies();
 
-    expect(insights).to.be.an.object();
-    expect(insights['schmervice.serviceX.add']).to.be.an.object();
-    expect(insights['schmervice.serviceX.add'].hits).to.equal(0);
+    expect(defaultPolicy).to.be.an.object();
+    expect(defaultPolicy.segments[0]).to.be.an.object();
+    expect(defaultPolicy.segments[0].stats.hits).to.equal(0);
   });
 
-  it('collects method stats 2.', async () => {
+  it('catbox stats are exprosed across different caches.', async () => {
     function add(a, b) {
       return a + b;
     }
@@ -77,32 +82,45 @@ describe('Deployment', () => {
     const server = Hapi.server();
 
     await server.register(Plugin);
+
     server.cache.provision([
       { name: 'service-cache', provider: require('@hapi/catbox-memory').Engine },
       { name: 'service-cache2', provider: require('@hapi/catbox-object').Engine },
     ]);
 
-    server.method('sum', add, { cache: { expiresIn: 2000, generateTimeout: 100 } });
-    server.method('sum2', add, {
-      cache: { cache: 'service-cache', expiresIn: 2000, generateTimeout: 100 },
-    });
-    server.method('sum3', add, {
-      cache: { cache: 'service-cache2', expiresIn: 2000, generateTimeout: 100 },
-    });
+    const cacheOptions = { expiresIn: 2000, generateTimeout: 100 };
 
-    let insights = server.methodCaches();
+    server.method('sum', add, { cache: { ...cacheOptions } });
+    server.method('sum2', add, { cache: { cache: 'service-cache', ...cacheOptions } });
+    server.method('sum3', add, { cache: { cache: 'service-cache2', ...cacheOptions } });
 
-    expect(insights).to.be.an.object();
-    expect(insights['sum']).to.be.an.object();
-    expect(insights['sum'].hits).to.equal(0);
-    expect(insights['sum2']).to.be.an.object();
-    expect(insights['sum2'].hits).to.equal(0);
-    expect(insights['sum3']).to.be.an.object();
-    expect(insights['sum3'].hits).to.equal(0);
+    let policies = server.cachePolicies();
+
+    expect(policies).to.be.an.object();
+    expect(policies['default']).to.be.an.object();
+    expect(policies['service-cache']).to.be.an.object();
+    expect(policies['service-cache2']).to.be.an.object();
+
+    expect(policies['default'].segments[0]).to.be.an.object();
+    expect(policies['default'].segments[0].name).to.equal('#sum');
+    expect(policies['default'].segments[0].stats.hits).to.equal(0);
+
+    expect(policies['service-cache'].segments[0]).to.be.an.object();
+    expect(policies['service-cache'].segments[0].name).to.equal('#sum2');
+    expect(policies['service-cache'].segments[0].stats.hits).to.equal(0);
+
+    expect(policies['service-cache2'].segments[0]).to.be.an.object();
+    expect(policies['service-cache2'].segments[0].name).to.equal('#sum3');
+    expect(policies['service-cache2'].segments[0].stats.hits).to.equal(0);
+
     expect(await server.methods.sum(1, 2)).to.equal(3);
+    expect(await server.methods.sum2(1, 2)).to.equal(3);
+    expect(await server.methods.sum3(1, 2)).to.equal(3);
 
-    insights = server.methodCaches();
+    policies = server.cachePolicies();
 
-    expect(insights['sum'].generates).to.equal(1);
+    expect(policies['default'].segments[0].stats.generates).to.equal(1);
+    expect(policies['service-cache'].segments[0].stats.generates).to.equal(1);
+    expect(policies['service-cache2'].segments[0].stats.generates).to.equal(1);
   });
 });

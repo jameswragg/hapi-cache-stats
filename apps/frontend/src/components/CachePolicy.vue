@@ -79,11 +79,11 @@ const chartData = computed(() => {
   }
 })
 
-const methods = computed(() => {
-  const result = {};
+const segments = computed(() => {
+  const result = {}
 
-  props.policy.segments.forEach(key => {
-    result[key] = state.methods[key.substring(1)];
+  props.policy.segments.forEach((segment) => {
+    result[segment.name] = segment.stats
   })
 
   return result
@@ -142,7 +142,13 @@ const methods = computed(() => {
         <ChevronUpIcon :class="open ? 'rotate-180 transform' : ''" class="w-5 h-5 text-sky-600" />
       </DisclosureButton>
       <DisclosurePanel class="px-4 pt-4 pb-2 space-y-3 text-sm text-gray-500">
-        <MethodStats v-for="(value, key) in methods" :name="key" :stats="value" class="w-full" :key="key" />
+        <SegmentStats
+          v-for="(value, key) in segments"
+          :name="key"
+          :stats="value"
+          class="w-full"
+          :key="key"
+        />
       </DisclosurePanel>
     </Disclosure>
   </section>

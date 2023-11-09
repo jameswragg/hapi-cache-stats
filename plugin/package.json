@@ -1,6 +1,6 @@
 {
   "name": "@jameswragg/hapi-cache-stats",
-  "version": "1.0.1",
+  "version": "1.1.2",
   "description": "Cache insights for Hapi servers",
   "main": "index.js",
   "scripts": {
