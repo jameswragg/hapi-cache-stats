@@ -1,11 +1,13 @@
 const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
+const Hoek = require('@hapi/hoek');
+const { randomInteger } = require('../utils');
 
 dayjs.extend(duration);
 
 const name = 'plugin_a';
 
-// const randomTrue = () => Math.random() < 0.25;
+const randomTrue = () => Math.random() < 0.25;
 
 module.exports = {
   name,
@@ -30,20 +32,19 @@ module.exports = {
         cache: {
           cache: `${name}--cache`,
           expiresIn: dayjs.duration(10, 'seconds').asMilliseconds(),
-          staleIn: dayjs.duration(8, 'seconds').asMilliseconds(),
+          staleIn: dayjs.duration(1, 'seconds').asMilliseconds(),
           staleTimeout: 100,
           generateTimeout: 10000,
         },
       }
     );
 
-    server.ext({
-      type: 'onRequest',
-      method: function (request, h) {
-        request.server.methods[`${name}_sum`](1, 2);
+    server.events.on('generate_stats', async () => {
+      await Hoek.wait(randomInteger(10, 5000)); // Simulate some slow I/O
 
-        return h.continue;
-      },
+      if (randomTrue()) {
+        server.methods[`${name}_sum`](1, 2);
+      }
     });
   },
 };

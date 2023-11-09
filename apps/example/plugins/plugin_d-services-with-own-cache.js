@@ -1,8 +1,12 @@
 const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
 const Schmervice = require('@hapipal/schmervice');
+const Hoek = require('@hapi/hoek');
+const { randomInteger } = require('../utils');
 
 dayjs.extend(duration);
+
+const randomTrue = () => Math.random() < 0.25;
 
 const name = 'plugin_d';
 
@@ -23,7 +27,7 @@ module.exports = {
         this.caching({
           add: {
             cache: {
-              // cache: `${name}--cache`,
+              cache: `${name}--cache`,
               expiresIn: dayjs.duration(24, 'hours').asMilliseconds(),
               staleIn: dayjs.duration(5, 'minutes').asMilliseconds(),
               staleTimeout: 100,
@@ -32,7 +36,7 @@ module.exports = {
           },
           multiply: {
             cache: {
-              // cache: `${name}--cache`,
+              cache: `${name}--cache`,
               expiresIn: dayjs.duration(24, 'hours').asMilliseconds(),
               staleIn: dayjs.duration(5, 'minutes').asMilliseconds(),
               staleTimeout: 100,
@@ -57,16 +61,15 @@ module.exports = {
 
     server.registerService(PluginDService);
 
-    server.ext({
-      type: 'onRequest',
-      method: function (request, h) {
-        const { pluginDService } = request.services();
+    server.events.on('generate_stats', async () => {
+      await Hoek.wait(randomInteger(10, 5000)); // Simulate some slow I/O
+
+      if (randomTrue()) {
+        const { pluginDService } = server.services();
 
         pluginDService.add(1, 2);
         pluginDService.multiply(1, 2);
-
-        return h.continue;
-      },
+      }
     });
   },
 };

@@ -1,8 +1,12 @@
 const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
 const Schmervice = require('@hapipal/schmervice');
+const Hoek = require('@hapi/hoek');
+const { randomInteger } = require('../utils');
 
 dayjs.extend(duration);
+
+const randomTrue = () => Math.random() < 0.25;
 
 const name = 'plugin_c';
 
@@ -50,16 +54,15 @@ module.exports = {
 
     server.registerService(PluginCService);
 
-    server.ext({
-      type: 'onRequest',
-      method: function (request, h) {
-        const { pluginCService } = request.services();
+    server.events.on('generate_stats', async () => {
+      await Hoek.wait(randomInteger(10, 5000)); // Simulate some slow I/O
+
+      if (randomTrue()) {
+        const { pluginCService } = server.services();
 
         pluginCService.add(1, 2);
         pluginCService.multiply(1, 2);
-
-        return h.continue;
-      },
+      }
     });
   },
 };

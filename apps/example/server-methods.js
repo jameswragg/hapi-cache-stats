@@ -1,15 +1,10 @@
 const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
-const { randomInteger } = require('./utils');
 
 dayjs.extend(duration);
 
 module.exports = (server) => {
   const add = function (a, b) {
-    if (randomInteger(1, 100) <= 1) {
-      // throw Error('general 1% error');
-    }
-
     return a + b;
   };
 
@@ -28,37 +23,37 @@ module.exports = (server) => {
     },
   });
 
-  // server.method({
-  //   name: 'sum2',
-  //   method: add,
-  //   options: {
-  //     cache: {
-  //       cache: 'service-cache2',
-  //       expiresIn: 2000,
-  //       generateTimeout: 100,
-  //     },
-  //   },
-  // });
+  server.method({
+    name: 'sum2',
+    method: add,
+    options: {
+      cache: {
+        cache: 'service-cache2',
+        expiresIn: 2000,
+        generateTimeout: 100,
+      },
+    },
+  });
 
-  // server.method({
-  //   name: 'sum3_noProvisionName',
-  //   method: add,
-  //   options: {
-  //     cache: {
-  //       expiresIn: 1000,
-  //       generateTimeout: 100,
-  //     },
-  //   },
-  // });
+  server.method({
+    name: 'sum3_noProvisionName',
+    method: add,
+    options: {
+      cache: {
+        expiresIn: 1000,
+        generateTimeout: 100,
+      },
+    },
+  });
 
-  // server.method({
-  //   name: 'sum4_noProvisionName',
-  //   method: add,
-  //   options: {
-  //     cache: {
-  //       expiresIn: 1000,
-  //       generateTimeout: 100,
-  //     },
-  //   },
-  // });
+  server.method({
+    name: 'sum4_noProvisionName',
+    method: add,
+    options: {
+      cache: {
+        expiresIn: 1000,
+        generateTimeout: 100,
+      },
+    },
+  });
 };

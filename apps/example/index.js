@@ -13,9 +13,14 @@ const init = async () => {
     },
   });
 
+  server.event('generate_stats');
+
   await server.register({
     plugin: require('@jameswragg/hapi-cache-stats'),
     options: {
+      snapshot: {
+        interval: 0.5,
+      },
       socketIo: {
         cors: {
           origin: 'http://localhost:5173',
@@ -29,6 +34,8 @@ const init = async () => {
   await server.register(require('./plugins/plugin_b-use-server-default.js'));
   await server.register(require('./plugins/plugin_c-services.js'));
   await server.register(require('./plugins/plugin_d-services-with-own-cache.js'));
+  await server.register(require('./plugins/plugin_e-custom-segment'));
+
   await server.register(Schmervice);
 
   server.registerService(require('./services.js'));
@@ -37,21 +44,11 @@ const init = async () => {
     method: 'get',
     path: '/generate-stats',
     handler: async (request, h) => {
-      const { mathService } = request.services();
+      server.events.emit('generate_stats');
 
       const count = randomInteger(1, 50);
-      for (let index = 0; index < count; index++) {
-        // request.app.sum1 = await server.methods.sum1(1, index);
-        // request.app.sum2 = await server.methods.sum2(1, index);
-        request.app.mathService_add = mathService.add(1, 2);
-      }
 
-      if (count > 40) {
-        // request.app.sum3 = await server.methods.sum3_noProvisionName(1, 2);
-      }
-
-      request.app.mathService_multiply = mathService.multiply(1, 2);
-      // request.app.sum4 = await server.methods.sum4_noProvisionName(1, 2);
+      await server.methods.sum1(1, count);
 
       return h.response('generated stats');
     },
