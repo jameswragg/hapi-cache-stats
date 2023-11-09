@@ -11,17 +11,9 @@ import {
 } from 'chart.js'
 import { Line } from 'vue-chartjs'
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
-const props = defineProps(['chartData', 'chartOptions']);
+const props = defineProps(['chartData', 'chartOptions'])
 </script>
 
 <template>

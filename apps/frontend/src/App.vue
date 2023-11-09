@@ -1,7 +1,7 @@
 <script setup>
-import { state } from '@/socket';
-import ConnectionManager from './components/ConnectionManager.vue';
-import CachePolicy from './components/CachePolicy.vue';
+import { state } from '@/socket'
+import ConnectionManager from './components/ConnectionManager.vue'
+import CachePolicy from './components/CachePolicy.vue'
 </script>
 
 <template>
@@ -15,7 +15,12 @@ import CachePolicy from './components/CachePolicy.vue';
       <h2 class="text-sm text-slate-500">
         Cache policies ({{ Object.keys(state.policies).length }})
       </h2>
-      <CachePolicy v-for="(policy, name) in state.policies" :policy="policy" :name="name" :key="name" />
+      <CachePolicy
+        v-for="(policy, name) in state.policies"
+        :policy="policy"
+        :name="name"
+        :key="name"
+      />
     </section>
   </div>
 </template>

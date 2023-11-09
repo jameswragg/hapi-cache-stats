@@ -1,12 +1,14 @@
 # @jameswragg/hapi-cache-stats
 
-Cache insights for Hapi servers
+Cache insights for [Hapi.js](https://hapi.dev/) servers with [Catbox](https://hapi.dev/tutorials/caching/?lang=en_US#server-side) cache policies
 
 ## Installation
 
 ```bash
 npm i @jameswragg/hapi-cache-stats
 ```
+
+Register the plugin as (one of) the first plugins on the server to ensure policies are caught.
 
 ```javascript
 const Hapi = require('@hapi/hapi');
@@ -19,7 +21,7 @@ const HapiCacheStats = require('@jameswragg/hapi-cache-stats');
     plugin: HapiCacheStats,
     options: {
       // options here
-    }
+    },
   });
 
   // app code here - using Catbox caches
@@ -40,18 +42,18 @@ Seeing what methods use the cache policy & their individual stats
 
 ## Plugin options
 
-* `base` - route to mount the UI on, default: `'/cache-stats'`
-* `snapshot` - object with the following settings regarding snapshots:
-  * `interval` - every X seconds, default: `5`
-  * `retention`: how many snapshots to retain, default: `60`
-* `socketIo` - socket.io [server options](https://socket.io/docs/v4/server-options/), default: `{ cors: { origin: '*' } }`
-
+- `base` - route to mount the UI on, default: `'/cache-stats'`
+- `snapshot` - object with the following settings regarding snapshots:
+  - `interval` - every X seconds, default: `5`
+  - `retention`: how many snapshots to retain, default: `60`
+- `socketIo` - socket.io [server options](https://socket.io/docs/v4/server-options/), default: `{ cors: { origin: '*' } }`
 
 ## Development
 
 To contribute to the project:
+
 1. Clone the repo
 2. `npm install`
 3. `npm run dev` - will file up an example server with policies, caches and a Vite server to host the frontend
 
-Then append `?dev` to the url e.g. `http://localhost:3000/cache-stats?dev`. This will load the Vue front-end via the Vite  server instead of built assets, supporting HMR on change etc.
+Then append `?dev` to the url e.g. `http://localhost:3000/cache-stats?dev`. This will load the Vue front-end via the Vite server instead of built assets, supporting HMR on change etc.
